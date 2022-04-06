@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  met-update:
+    image: ghcr.io/eurocontrol-swim/predicted-runway-met-update:master
+    volumes:
+      - met-volume:/data
+    env_file:
+      - ./met_update/met-update.env
+    restart: "on-failure:3"
+  web-app:
+    image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
+    volumes:
+      - met-volume:/data/met
+      - type: bind
+        source: ./predicted_runway/models
+        target: /data/models
+    expose:
+      - "5000"
+    env_file:
+      - ./predicted_runway/web-app.env
+    restart: "on-failure:3"
+  web-server:
+    image: ghcr.io/eurocontrol-swim/predicted-runway-webserver:master
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    volumes:
+      - type: bind
+        source: ./nginx/secrets
+        target: /etc/nginx/ssl
+    restart: "on-failure:3"
+volumes:
+  met-volume:
+
+
