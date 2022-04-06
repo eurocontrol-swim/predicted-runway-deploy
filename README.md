@@ -10,7 +10,7 @@ You can deploy the docker containers with:
 docker-compose up -d
 ```
 
-The web-app service expects in `./predicted_runway/models` the trained sklearn models you wish to make available as it will use this directory as a bind mount.
+The web-app service expects in `./predicted_runway/models` the trained sklearn models you wish to make available.
 
 The nginx services expects in `./nginx/secrets` the following files:
 
