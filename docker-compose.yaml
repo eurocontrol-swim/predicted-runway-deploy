@@ -4,8 +4,10 @@ services:
     image: ghcr.io/eurocontrol-swim/predicted-runway-met-update:master
     volumes:
       - met-volume:/data
-    env_file:
-      - ./met_update/met-update.env
+    environment:
+      - UPDATE_RATE
+      - ICAO_CODES
+      - AVWX_TOKEN
     restart: "on-failure:3"
   web-app:
     image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
@@ -16,8 +18,8 @@ services:
         target: /data/models
     expose:
       - "5000"
-    env_file:
-      - ./predicted_runway/web-app.env
+    environment:
+      - SECRET_KEY
     restart: "on-failure:3"
   web-server:
     image: ghcr.io/eurocontrol-swim/predicted-runway-webserver:master
