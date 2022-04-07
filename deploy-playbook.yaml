@@ -1,0 +1,53 @@
+---
+- name: Deploy Predicted Runway
+  hosts: predicted_runway
+  
+  tasks:
+  - name: Update repo
+    ansible.builtin.git:
+      repo: https://github.com/eurocontrol-swim/predicted-runway-deploy.git
+      dest: /home/ec2-user/predicted-runway-deploy
+
+  - name: Copy nginx secrets
+    ansible.builtin.copy:
+      src: ./nginx/secrets
+      dest: /home/ec2-user/predicted-runway-deploy/nginx
+      owner: ec2-user
+      group: ec2-user
+      mode: 0644
+
+  - name: Copy ML models
+    ansible.builtin.copy:
+      src: ./predicted_runway/models
+      dest: /home/ec2-user/predicted-runway-deploy/predicted_runway
+      owner: ec2-user
+      group: ec2-user
+      mode: 0644
+
+  - name: Set environment variables
+    ansible.builtin.copy:
+      src: ./environment_variables
+      dest: /etc/environment
+      owner: root
+      group: root
+      mode: 0644
+    become: yes
+
+  - name: Install Python's pip
+    ansible.builtin.yum:
+      name: python2-pip
+      state: latest
+    become: yes
+
+  - name: Install python's docker and docker-compose libraries
+    ansible.builtin.pip:
+      name: 
+        - docker
+        - docker-compose
+
+  - name: Update and run containers
+    community.docker.docker_compose:
+      state: present
+      build: yes
+      project_src: /home/ec2-user/predicted-runway-deploy
+
