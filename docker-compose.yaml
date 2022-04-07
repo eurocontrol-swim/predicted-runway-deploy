@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.3"
 services:
   met-update:
     image: ghcr.io/eurocontrol-swim/predicted-runway-met-update:master
@@ -33,5 +33,3 @@ services:
     restart: "on-failure:3"
 volumes:
   met-volume:
-
-
