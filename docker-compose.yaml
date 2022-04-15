@@ -16,6 +16,9 @@ services:
       - type: bind
         source: ./predicted_runway/models
         target: /data/models
+      - type: bind
+        source: ./predicted_runway/metrics
+        target: /data/metrics
     expose:
       - "5000"
     environment:

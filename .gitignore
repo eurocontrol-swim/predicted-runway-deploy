@@ -1,4 +1,5 @@
 *.env
 *.pkl
+*.json
 nginx/secrets/*
 .idea
