@@ -3,7 +3,7 @@ services:
   met-update:
     image: ghcr.io/eurocontrol-swim/predicted-runway-met-update:master
     volumes:
-      - /data:/data
+      - met-volume:/data
     environment:
       - UPDATE_RATE
       - ICAO_CODES
