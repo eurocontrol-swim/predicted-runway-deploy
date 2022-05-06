@@ -4,7 +4,6 @@ services:
     image: ghcr.io/eurocontrol-swim/predicted-runway-met-update:master
     volumes:
       - met-volume:/data
-      - static:/static
     environment:
       - UPDATE_RATE
       - ICAO_CODES
@@ -32,6 +31,7 @@ services:
       - "8080:8080"
       - "8443:8443"
     volumes:
+      - static:/static
       - type: bind
         source: ./nginx/secrets
         target: /etc/nginx/ssl
