@@ -14,12 +14,8 @@ services:
     volumes:
       - met-volume:/data/met
       - static:/predicted_runway/app/static
-      - type: bind
-        source: ./predicted_runway/models
-        target: /data/models
-      - type: bind
-        source: ./predicted_runway/stats
-        target: /data/stats
+      - ./predicted_runway/models:/data/models
+      - ./predicted_runway/stats:/data/stats
     expose:
       - "5000"
     environment:
@@ -32,9 +28,7 @@ services:
       - "8443:8443"
     volumes:
       - static:/static
-      - type: bind
-        source: ./nginx/secrets
-        target: /etc/nginx/ssl
+      - ./nginx/secrets:/etc/nginx/ssl
     restart: "on-failure:3"
 
 volumes:
