@@ -4,6 +4,7 @@ services:
     image: ghcr.io/eurocontrol-swim/predicted-runway-met-update:master
     volumes:
       - met-volume:/data
+      - static:/static
     environment:
       - UPDATE_RATE
       - ICAO_CODES
@@ -13,6 +14,7 @@ services:
     image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
     volumes:
       - met-volume:/data/met
+      - static:/predicted_runway/app/static
       - type: bind
         source: ./predicted_runway/models
         target: /data/models
@@ -34,5 +36,9 @@ services:
         source: ./nginx/secrets
         target: /etc/nginx/ssl
     restart: "on-failure:3"
+
 volumes:
   met-volume:
+    driver: local
+  static:
+    driver: local
