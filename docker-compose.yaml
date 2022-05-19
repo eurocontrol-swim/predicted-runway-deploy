@@ -13,7 +13,7 @@ services:
     image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
     volumes:
       - met-volume:/data/met
-      - static:/predicted_runway/app/static
+      - static:/app/predicted_runway/static
       - ./predicted_runway/models:/data/models
       - ./predicted_runway/stats:/data/stats
     expose:
