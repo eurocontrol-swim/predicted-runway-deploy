@@ -40,7 +40,7 @@ services:
   pr-api-runway-prediction:
 #    TODO: revert
 #    image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
-    image: pr-web-app
+    image: pr-api
     container_name: pr-api-runway-prediction
     volumes:
 #      TODO: revert
@@ -48,6 +48,7 @@ services:
 #      - ./predicted_runway/stats:/data/stats
       - /data/models:/data/models
       - /data/stats:/data/stats
+      - /data/airports:/data/airports
     expose:
       - "5000"
     environment:
@@ -64,7 +65,7 @@ services:
   pr-api-runway-config-prediction:
 #    TODO: revert
 #    image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
-    image: pr-web-app
+    image: pr-api
     container_name: pr-api-runway-config-prediction
     volumes:
 #      TODO: revert
@@ -72,6 +73,7 @@ services:
 #      - ./predicted_runway/stats:/data/stats
       - /data/models:/data/models
       - /data/stats:/data/stats
+      - /data/airports:/data/airports
     expose:
       - "5000"
     environment:
@@ -89,7 +91,7 @@ services:
   pr-api-extra:
     #    TODO: revert
     #    image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
-    image: pr-web-app
+    image: pr-api
     container_name: pr-api-extra
     volumes:
       #      TODO: revert
@@ -97,6 +99,7 @@ services:
       #      - ./predicted_runway/stats:/data/stats
       - /data/models:/data/models
       - /data/stats:/data/stats
+      - /data/airports:/data/airports
     expose:
       - "5000"
     environment:
@@ -119,7 +122,7 @@ services:
       - "8080:8080"
       - "8443:8443"
     volumes:
-      - /data/pr-web-ui/html:/usr/share/nginx/html
+      - /data/pr-ui/html:/usr/share/nginx/html
       - ./nginx/secrets:/etc/nginx/ssl
     restart: "on-failure:3"
     networks:
