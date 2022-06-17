@@ -25,13 +25,9 @@ services:
 #    image: ghcr.io/eurocontrol-swim/predicted-runway-met-update:master
     image: pr-met-update
     container_name: pr-met-update
-    environment:
-      - UPDATE_RATE
-      - ICAO_CODES
-      - AVWX_TOKEN
-      - MET_UPDATE_DB_NAME
-      - MET_UPDATE_DB_HOST
-    restart: "on-failure:3"
+    env_file:
+      - .env
+    restart: "on-failure"
     depends_on:
       - mongo
     networks:
@@ -46,16 +42,13 @@ services:
 #      TODO: revert
 #      - ./predicted_runway/models:/data/models
 #      - ./predicted_runway/stats:/data/stats
+#      - ./predicted_runway/airports:/data/airports
       - /data/models:/data/models
       - /data/stats:/data/stats
       - /data/airports:/data/airports
-    expose:
-      - "5000"
-    environment:
-      - SECRET_KEY
-      - MET_UPDATE_DB_NAME
-      - MET_UPDATE_DB_HOST
-    restart: "on-failure:3"
+    env_file:
+      - .env
+    restart: "on-failure"
     depends_on:
       - mongo
     networks:
@@ -71,16 +64,13 @@ services:
 #      TODO: revert
 #      - ./predicted_runway/models:/data/models
 #      - ./predicted_runway/stats:/data/stats
+#      - ./predicted_runway/airports:/data/airports
       - /data/models:/data/models
       - /data/stats:/data/stats
       - /data/airports:/data/airports
-    expose:
-      - "5000"
-    environment:
-      - SECRET_KEY
-      - MET_UPDATE_DB_NAME
-      - MET_UPDATE_DB_HOST
-    restart: "on-failure:3"
+    env_file:
+      - .env
+    restart: "on-failure"
     depends_on:
       - mongo
     networks:
@@ -97,16 +87,13 @@ services:
       #      TODO: revert
       #      - ./predicted_runway/models:/data/models
       #      - ./predicted_runway/stats:/data/stats
+      #      - ./predicted_runway/airports:/data/airports
       - /data/models:/data/models
       - /data/stats:/data/stats
       - /data/airports:/data/airports
-    expose:
-      - "5000"
-    environment:
-      - SECRET_KEY
-      - MET_UPDATE_DB_NAME
-      - MET_UPDATE_DB_HOST
-    restart: "on-failure:3"
+    env_file:
+      - .env
+    restart: "on-failure"
     depends_on:
       - mongo
     networks:
@@ -124,7 +111,7 @@ services:
     volumes:
       - /data/pr-ui/html:/usr/share/nginx/html
       - ./nginx/secrets:/etc/nginx/ssl
-    restart: "on-failure:3"
+    restart: "on-failure"
     networks:
       - predicted-runway
 
