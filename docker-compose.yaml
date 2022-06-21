@@ -5,7 +5,7 @@ services:
     image: mongo
     container_name: mongo
     volumes:
-      - met-update-db-data:/data/db
+      - db-data:/data/db
     networks:
       - predicted-runway
 
@@ -13,7 +13,7 @@ services:
     image: mongo-express
     container_name: mongo-express
     ports:
-      - 8081:8081
+      - "8081:8081"
     depends_on:
       - mongo
     restart: "unless-stopped"
@@ -21,9 +21,7 @@ services:
       - predicted-runway
 
   met-update:
-#    TODO: revert
-#    image: ghcr.io/eurocontrol-swim/predicted-runway-met-update:master
-    image: pr-met-update
+    image: ghcr.io/eurocontrol-swim/predicted-runway-met-update:master
     container_name: pr-met-update
     env_file:
       - .env
@@ -34,18 +32,12 @@ services:
       - predicted-runway
 
   pr-api-runway-prediction:
-#    TODO: revert
-#    image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
-    image: pr-api
+    image: ghcr.io/eurocontrol-swim/predicted-runway-api:master
     container_name: pr-api-runway-prediction
     volumes:
-#      TODO: revert
-#      - ./predicted_runway/models:/data/models
-#      - ./predicted_runway/stats:/data/stats
-#      - ./predicted_runway/airports:/data/airports
-      - /data/models:/data/models
-      - /data/stats:/data/stats
-      - /data/airports:/data/airports
+      - ./predicted_runway/models:/data/models
+      - ./predicted_runway/stats:/data/stats
+      - ./predicted_runway/airports:/data/airports
     env_file:
       - .env
     restart: "on-failure"
@@ -56,18 +48,12 @@ services:
     command: gunicorn -w 1 --bind :5000 predicted_runway.app:create_app()
 
   pr-api-runway-config-prediction:
-#    TODO: revert
-#    image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
-    image: pr-api
+    image: ghcr.io/eurocontrol-swim/predicted-runway-api:master
     container_name: pr-api-runway-config-prediction
     volumes:
-#      TODO: revert
-#      - ./predicted_runway/models:/data/models
-#      - ./predicted_runway/stats:/data/stats
-#      - ./predicted_runway/airports:/data/airports
-      - /data/models:/data/models
-      - /data/stats:/data/stats
-      - /data/airports:/data/airports
+      - ./predicted_runway/models:/data/models
+      - ./predicted_runway/stats:/data/stats
+      - ./predicted_runway/airports:/data/airports
     env_file:
       - .env
     restart: "on-failure"
@@ -79,18 +65,12 @@ services:
 
 
   pr-api-extra:
-    #    TODO: revert
-    #    image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
-    image: pr-api
+    image: ghcr.io/eurocontrol-swim/predicted-runway-api:master
     container_name: pr-api-extra
     volumes:
-      #      TODO: revert
-      #      - ./predicted_runway/models:/data/models
-      #      - ./predicted_runway/stats:/data/stats
-      #      - ./predicted_runway/airports:/data/airports
-      - /data/models:/data/models
-      - /data/stats:/data/stats
-      - /data/airports:/data/airports
+      - ./predicted_runway/models:/data/models
+      - ./predicted_runway/stats:/data/stats
+      - ./predicted_runway/airports:/data/airports
     env_file:
       - .env
     restart: "on-failure"
@@ -101,9 +81,7 @@ services:
     command: gunicorn -w 1 --bind :5000 predicted_runway.app:create_app()
 
   web-server:
-#    TODO: revert
-#    image: ghcr.io/eurocontrol-swim/predicted-runway-webserver:master
-    image: pr-web-server
+    image: ghcr.io/eurocontrol-swim/predicted-runway-webserver:master
     container_name: pr-web-server
     ports:
       - "8080:8080"
@@ -116,7 +94,7 @@ services:
       - predicted-runway
 
 volumes:
-  met-update-db-data:
+  db-data:
     driver: local
 
 networks:
