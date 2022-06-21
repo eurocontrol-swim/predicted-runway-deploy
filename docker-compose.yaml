@@ -1,38 +1,102 @@
-version: "3.3"
+version: "3.9"
 services:
+
+  mongo:
+    image: mongo
+    container_name: mongo
+    volumes:
+      - db-data:/data/db
+    networks:
+      - predicted-runway
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+    restart: "unless-stopped"
+    networks:
+      - predicted-runway
+
   met-update:
     image: ghcr.io/eurocontrol-swim/predicted-runway-met-update:master
+    container_name: pr-met-update
+    env_file:
+      - .env
+    restart: "on-failure"
+    depends_on:
+      - mongo
+    networks:
+      - predicted-runway
+
+  pr-api-runway-prediction:
+    image: ghcr.io/eurocontrol-swim/predicted-runway-api:master
+    container_name: pr-api-runway-prediction
     volumes:
-      - met-volume:/data
-    environment:
-      - UPDATE_RATE
-      - ICAO_CODES
-      - AVWX_TOKEN
-    restart: "on-failure:3"
-  web-app:
-    image: ghcr.io/eurocontrol-swim/predicted-runway-webapp:master
-    volumes:
-      - met-volume:/data/met
-      - static:/app/predicted_runway/static
       - ./predicted_runway/models:/data/models
       - ./predicted_runway/stats:/data/stats
-    expose:
-      - "5000"
-    environment:
-      - SECRET_KEY
-    restart: "on-failure:3"
+      - ./predicted_runway/airports:/data/airports
+    env_file:
+      - .env
+    restart: "on-failure"
+    depends_on:
+      - mongo
+    networks:
+      - predicted-runway
+    command: gunicorn -w 1 --bind :5000 predicted_runway.app:create_app()
+
+  pr-api-runway-config-prediction:
+    image: ghcr.io/eurocontrol-swim/predicted-runway-api:master
+    container_name: pr-api-runway-config-prediction
+    volumes:
+      - ./predicted_runway/models:/data/models
+      - ./predicted_runway/stats:/data/stats
+      - ./predicted_runway/airports:/data/airports
+    env_file:
+      - .env
+    restart: "on-failure"
+    depends_on:
+      - mongo
+    networks:
+      - predicted-runway
+    command: gunicorn -w 1 --bind :5000 predicted_runway.app:create_app()
+
+
+  pr-api-extra:
+    image: ghcr.io/eurocontrol-swim/predicted-runway-api:master
+    container_name: pr-api-extra
+    volumes:
+      - ./predicted_runway/models:/data/models
+      - ./predicted_runway/stats:/data/stats
+      - ./predicted_runway/airports:/data/airports
+    env_file:
+      - .env
+    restart: "on-failure"
+    depends_on:
+      - mongo
+    networks:
+      - predicted-runway
+    command: gunicorn -w 1 --bind :5000 predicted_runway.app:create_app()
+
   web-server:
     image: ghcr.io/eurocontrol-swim/predicted-runway-webserver:master
+    container_name: pr-web-server
     ports:
       - "8080:8080"
       - "8443:8443"
     volumes:
-      - static:/static
+      - /data/pr-ui/html:/usr/share/nginx/html
       - ./nginx/secrets:/etc/nginx/ssl
-    restart: "on-failure:3"
+    restart: "on-failure"
+    networks:
+      - predicted-runway
 
 volumes:
-  met-volume:
+  db-data:
     driver: local
-  static:
-    driver: local
+
+networks:
+  predicted-runway:
+    driver: bridge
