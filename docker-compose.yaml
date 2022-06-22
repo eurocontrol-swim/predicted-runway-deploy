@@ -89,7 +89,7 @@ services:
       - "8080:8080"
       - "8443:8443"
     volumes:
-      - /data/pr-ui/html:/usr/share/nginx/html
+      - ./predicted_runway/pr-ui/html:/usr/share/nginx/html
       - ./nginx/secrets:/etc/nginx/ssl
     restart: "on-failure"
     networks:
