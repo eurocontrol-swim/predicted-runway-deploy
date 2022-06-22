@@ -1,4 +1,5 @@
 version: "3.9"
+
 services:
 
   mongo:
@@ -45,7 +46,7 @@ services:
       - mongo
     networks:
       - predicted-runway
-    command: gunicorn -w 1 --bind :5000 predicted_runway.app:create_app()
+    command: ["gunicorn", "-w", "1", "--bind", ":5000", "predicted_runway.app:create_app()"]
 
   pr-api-runway-config-prediction:
     image: ghcr.io/eurocontrol-swim/predicted-runway-api:master
@@ -61,7 +62,7 @@ services:
       - mongo
     networks:
       - predicted-runway
-    command: gunicorn -w 1 --bind :5000 predicted_runway.app:create_app()
+    command: ["gunicorn", "-w", "1", "--bind", ":5000", "predicted_runway.app:create_app()"]
 
 
   pr-api-extra:
@@ -78,7 +79,8 @@ services:
       - mongo
     networks:
       - predicted-runway
-    command: gunicorn -w 1 --bind :5000 predicted_runway.app:create_app()
+    command: ["gunicorn", "-w", "1", "--bind", ":5000", "predicted_runway.app:create_app()"]
+
 
   web-server:
     image: ghcr.io/eurocontrol-swim/predicted-runway-webserver:master
