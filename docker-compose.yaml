@@ -85,9 +85,13 @@ services:
   web-server:
     image: ghcr.io/eurocontrol-swim/predicted-runway-webserver:master
     container_name: pr-web-server
+    depends_on:
+      - pr-api-runway-prediction
+      - pr-api-runway-config-prediction
+      - pr-api-extra
     ports:
-      - "8080:8080"
-      - "8443:8443"
+      - "80:80"
+      - "443:443"
     volumes:
       - ./predicted_runway/pr-ui/html:/usr/share/nginx/html
       - ./nginx/secrets:/etc/nginx/ssl
